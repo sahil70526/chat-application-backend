@@ -24,6 +24,7 @@ app.use('/api/message', messageRoutes);
 mongoose.set('strictQuery', false);
 mongoDBConnect();
 const server = app.listen(process.env.PORT, () => {
+  const port = process.env.PORT || 10000
   console.log(`Server Listening at PORT - ${process.env.PORT}`);
 });
 const io = new Server.Server(server, {
