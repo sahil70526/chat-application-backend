@@ -10,14 +10,14 @@ import messageRoutes from './routes/message.js';
 import * as Server from 'socket.io';
 
 const app = express();
-const corsConfig = {
-  origin: process.env.BASE_URL,
-  credentials: true,
-};
+// const corsConfig = {
+//   origin: process.env.BASE_URL,
+//   credentials: true,
+// };
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors(corsConfig));
+app.use(cors());
 app.use('/', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
