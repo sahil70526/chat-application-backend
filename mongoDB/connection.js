@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const mongoDBConnect = () => {
+  console.log(process.env.URL)
   try {
     mongoose.connect(process.env.URL, {
       useUnifiedTopology: true,

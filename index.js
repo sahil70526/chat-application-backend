@@ -21,6 +21,9 @@ app.use(cors(corsConfig));
 app.use('/', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
+app.get('/',(req,res)=>{
+  res.json({"connectionMessage":"success"})
+});
 mongoose.set('strictQuery', false);
 mongoDBConnect();
 const server = app.listen(process.env.PORT, () => {
