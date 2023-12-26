@@ -39,7 +39,7 @@ const io = new Server.Server(server, {
 io.on('connection', (socket) => {
   socket.on('setup', (userData) => {
     socket.join(userData.id);
-    socket.emit('connected');
+    socket.emit('connected')
   });
   socket.on('join room', (room) => {
     socket.join(room);
