@@ -30,7 +30,7 @@ export const login = async (req, res) => {
       res.status(200).json({ message: 'Invalid Credentials' });
     } else {
       const token = await valid.generateAuthToken();
-      await valid.save();
+      // await valid.save();
       res.cookie('userToken', token, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
@@ -38,6 +38,7 @@ export const login = async (req, res) => {
       res.status(200).json({ token: token, status: 200 });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error });
   }
 };
