@@ -30,7 +30,7 @@ const server = app.listen(process.env.PORT, () => {
 const io = new Server.Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: 'https://chate-mate.netlify.app',
+    origin: process.env.BASE_URL,
   },
 });
 io.on('connection', (socket) => {
@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
     socket.emit('connected');
   });
   socket.on('join room', (room) => {
-    socket.join(room)
+    socket.join(room);
   });
   socket.on('typing', (room) => socket.in(room).emit('typing'));
   socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
