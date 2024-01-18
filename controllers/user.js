@@ -133,7 +133,7 @@ export const updateInfo = async (req, res) => {
   try {
     const { id } = req.params;
     const { bio, name,imageName } = req.body;
-    let profilePic = `${process.env.SERVER_BASE_URL}user/profileImage/download/${imageName}`
+    let profilePic = `${process.env.SERVER_BASE_URL}api/user/profileImage/download/${imageName}`
     const updatedUser = await user.findByIdAndUpdate(id, { name, bio, profilePic });
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -162,4 +162,3 @@ export const getUserProfilePic = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
-
