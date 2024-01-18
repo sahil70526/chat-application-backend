@@ -3,7 +3,7 @@ const router = express.Router();
 import { sendMessage, getMessages, addMedia,getMedia } from "../controllers/messageControllers.js";
 import { Auth } from "../middleware/user.js";
 import { uploadMedia } from '../multer/multer.js';
-router.post("/", sendMessage);
+router.post("/",Auth, sendMessage);
 router.post("/share-media", uploadMedia.single("media"), addMedia);
 router.get("/:chatId", Auth, getMessages);
 router.get("/media/download/:fileName/:contentType/:fileType", getMedia);

@@ -5,9 +5,9 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'
 export const sendMessage = async (req, res) => {
-  const { chatId, message } = req.body;
+  const { chatId, message,messageType } = req.body;
   try {
-    let msg = await Message.create({ sender: req.rootUserId, message, chatId });
+    let msg = await Message.create({ sender: req.rootUserId, message, chatId,messageType });
     msg = await (
       await msg.populate('sender', 'name profilePic email')
     ).populate({
@@ -33,8 +33,15 @@ export const sendMessage = async (req, res) => {
 export const addMedia = async (req, res) => {
   try {
     let mediaUrl = `${process.env.SERVER_BASE_URL}api/message/media/download/${req.file.filename}/${req.file.mimetype}`
+    let contentType = "";
+    for(let i=0;i<req.file.mimetype.length;i++){
+      if(req.file.mimetype[i]==='/'){
+        contentType = req.file.mimetype.slice(0,i)
+      }
+    }
     if (req.file.path) res.status(200).json({
-      mediaUrl
+      mediaUrl,
+      contentType
     });
   } catch (error) {
     res.status(500).json({ error: error });

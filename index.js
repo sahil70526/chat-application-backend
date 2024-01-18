@@ -31,6 +31,7 @@ const io = new Server.Server(server, {
   cors: {
     origin: 'http://localhost:3000',
   },
+  maxHttpBufferSize: 1e8 // 100 MB
 });
 io.on('connection', (socket) => {
   socket.on('setup', (userData) => {
@@ -47,8 +48,16 @@ io.on('connection', (socket) => {
     var chat = newMessageRecieve.chatId;
     if (!chat.users) console.log('chats.users is not defined');
     chat.users.forEach((user) => {
-      if (user._id == newMessageRecieve.sender._id) return;
+      // if (user._id == newMessageRecieve.sender._id) return;
       socket.in(user._id).emit('message recieved', newMessageRecieve);
     });
   });
+  // socket.on('share media', (file) => {
+    // var chat = newMessageRecieve.chatId;
+    // if (!chat.users) console.log('chats.users is not defined');
+    // chat.users.forEach((user) => {
+    //   if (user._id == newMessageRecieve.sender._id) return;
+    //   socket.in(user._id).emit('message recieved', newMessageRecieve);
+    // });
+  // });
 });
