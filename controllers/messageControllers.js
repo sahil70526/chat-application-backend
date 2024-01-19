@@ -4,6 +4,8 @@ import Chat from '../models/chatModel.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'
+import mongoose from 'mongoose'
+import { timeStamp } from 'console';
 export const sendMessage = async (req, res) => {
   const { chatId, message,messageType } = req.body;
   try {
@@ -65,23 +67,79 @@ export const getMedia = async (req, res) => {
     res.status(500).json({ error: error });
   }
 }
+// export const getMessages = async (req, res) => {
+//   const { chatId } = req.params;
+//   try {
+//     let messages = await Message.find({ chatId })
+//       .populate({
+//         path: 'sender',
+//         model: 'User',
+//         select: 'name profilePic email',
+//       })
+//       .populate({
+//         path: 'chatId',
+//         model: 'Chat',
+//       });
+//      console.log(messages)
+//     res.status(200).json(messages);
+//   } catch (error) {
+//     res.sendStatus(500).json({ error: error });
+//     console.log(error);
+//   }
+// };
+
 export const getMessages = async (req, res) => {
   const { chatId } = req.params;
-  try {
-    let messages = await Message.find({ chatId })
-      .populate({
-        path: 'sender',
-        model: 'User',
-        select: 'name profilePic email',
-      })
-      .populate({
-        path: 'chatId',
-        model: 'Chat',
-      });
+  // const { page = 1, pageSize = 10 } = req.query;
+  let page = 1, pageSize = 10;
 
-    res.status(200).json(messages);
+  try {
+    const pipeline = [
+      { $match: { chatId: mongoose.Types.ObjectId(chatId) } },
+      {
+        $lookup: {
+          from: 'users', // Replace with the actual name of your User model collection
+          localField: 'sender',
+          foreignField: '_id',
+          as: 'senderInfo',
+        },
+      },
+      {
+        $lookup: {
+          from: 'chats', // Replace with the actual name of your Chat model collection
+          localField: 'chatId',
+          foreignField: '_id',
+          as: 'chatInfo',
+        },
+      },
+      { $unwind: '$senderInfo' },
+      { $unwind: '$chatInfo' },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: parseInt(pageSize) },
+      {
+        $project: {
+          _id: 1,
+          index:-1,
+          text: 1,
+          createdAt: 1,
+          sender: {
+            _id:"$senderInfo._id",
+            name: '$senderInfo.name',
+            profilePic: '$senderInfo.profilePic',
+            email: '$senderInfo.email',
+          },
+          chatId: '$chatInfo',
+          message:"$message",
+          messageType:"$messageType"
+        },
+      },
+    ];
+
+    const messages = await Message.aggregate(pipeline);
+    res.status(200).json(messages.reverse());
   } catch (error) {
-    res.sendStatus(500).json({ error: error });
-    console.log(error);
+    res.status(500).json({ error: error.message });
+    console.error(error);
   }
 };
