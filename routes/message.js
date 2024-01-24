@@ -5,6 +5,6 @@ import { Auth } from "../middleware/user.js";
 import { uploadMedia } from '../multer/multer.js';
 router.post("/",Auth, sendMessage);
 router.post("/share-media", uploadMedia.single("media"), addMedia);
-router.get("/:chatId", Auth, getMessages);
+router.get("/:page/:chatId", Auth, getMessages);
 router.get("/media/download/:fileName/:contentType/:fileType", getMedia);
 export default router;

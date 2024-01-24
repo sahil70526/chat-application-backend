@@ -5,7 +5,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'
 import mongoose from 'mongoose'
-import { timeStamp } from 'console';
+
 export const sendMessage = async (req, res) => {
   const { chatId, message,messageType } = req.body;
   try {
@@ -89,9 +89,9 @@ export const getMedia = async (req, res) => {
 // };
 
 export const getMessages = async (req, res) => {
-  const { chatId } = req.params;
+  const { chatId,page } = req.params;
   // const { page = 1, pageSize = 10 } = req.query;
-  let page = 1, pageSize = 10;
+  let pageSize = 10;
 
   try {
     const pipeline = [
